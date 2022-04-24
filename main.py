@@ -1,24 +1,84 @@
-import item as it
+"""Simple command line interface to hold the shop system together"""
 import shop as sp
 import user as ur
 
 
-def setup() -> None:
-    shop = sp.Shop
-    user = ur.User
+def print_help() -> None:
+    """Prints all available commands
 
-    item_names = []
-    item_prices = []
-    item_quantities = []
+    Parameters:
+        None
 
-    items = [it.Item(item_names[i], item_prices[i]) for i in range(len(item_names))]
-    inventory = {items[i].name: item_quantities[i] for i in range(len(item_quantities))}
+    Returns:
+        Nothing: None
+    """
+    print("buy: Allows you to purchase the items in your cart")
+    print("cart: Prints the your cart and its total price")
+    print("help: Pritns the list of availible commands")
+    print("inventory: Prints your inventory and how much money you have")
+    print("items: Prints all items availible for sale")
+    print("quit: Exits the shop")
 
-    shop.inventory = inventory
+
+def cli(user: ur.User, shop: sp.Shop) -> None:
+    """Primary CLI function for user interation. Can easily be re-written to suit anyone's needs.
+
+    Parameters:
+        None
+
+    Returns:
+        Nothing: None
+    """
+    print("Store Project Mark 1 Mod 0\n")
+    print("Type 'help' for a list of commands.")
+    while True:
+        command = str(input("\n> ")).split(" ")
+        if command[0] in [item.name.lower() for item in shop.inventory]:
+            if len(command) == 2:
+                shop.add_to_cart(command[0], int(command[1]))
+            else:
+                print("Please include a quantiy to add to cart.")
+
+        else:
+            match command[0]:
+                case "buy":
+                    shop.purchase_cart(user)
+                    print("Your inventory:")
+                    user.print_inventory()
+
+                case "cart":
+                    shop.cart.print_cart()
+
+                case "help":
+                    print_help()
+
+                case "inventory":
+                    user.print_inventory()
+
+                case "items":
+                    shop.print_store_inventory()
+
+                case "quit":
+                    break
+            continue
 
 
 def main() -> None:
-    setup()
+    """Entry point for demo
+
+    Parameters:
+        None
+
+    Returns:
+        Nothing: None
+    """
+    store: sp.Shop = sp.Shop(
+        ["Sword", "Bow", "Arrows"], [10, 5, 1], [1, 2, 50], [100, 100, -1]
+    )
+    player: ur.User = ur.User(100)
+
+    cli(player, store)
+    print("Thank you for using Shop Mark 1 Mod 0.")
 
 
 if __name__ == "__main__":
