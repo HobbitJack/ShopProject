@@ -15,7 +15,7 @@ def print_help() -> None:
     """
     print("buy: Allows you to purchase the items in your cart")
     print("cart: Prints the your cart and its total price")
-    print("help: Pritns the list of availible commands")
+    print("help: Prints the list of availible commands")
     print("inventory: Prints your inventory and how much money you have")
     print("items: Prints all items availible for sale")
     print("quit: Exits the shop")
@@ -25,7 +25,8 @@ def cli(user: ur.User, shop: sp.Shop) -> None:
     """Primary CLI function for user interation. Can easily be re-written to suit anyone's needs.
 
     Parameters:
-        None
+        user: user.User = Player object to get money from and acess inventory
+        shop: shop.Shop = Shop object with given inventory to sell from
 
     Returns:
         Nothing: None
@@ -38,7 +39,7 @@ def cli(user: ur.User, shop: sp.Shop) -> None:
             if len(command) == 2:
                 shop.add_to_cart(command[0], int(command[1]))
             else:
-                print("Please include a quantiy to add to cart.")
+                print("Please include a quantity to add to cart.")
 
         else:
             match command[0]:
