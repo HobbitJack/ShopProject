@@ -24,7 +24,7 @@ class User:
             None
 
         Returns:
-            Nothing: None
+            Nothing
         """
         print(f"Wallet: ${self.wallet:.2f}")
         if len(self.inventory) > 0:

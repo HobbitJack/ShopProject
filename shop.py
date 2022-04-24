@@ -63,7 +63,7 @@ class Shop:
             None
 
         Returns:
-            Nothing: None
+            Nothing
         """
         remove_list = []
         for item in self.inventory:
@@ -84,7 +84,7 @@ class Shop:
             amount: int = Quantity of items of the specified type to add to cart
 
         Returns:
-            Nothing: None
+            Nothing
         """
         for item in self.inventory:
             if item.name.lower() == item_name:
@@ -103,7 +103,7 @@ class Shop:
             user: user.User = User to purchase cart for
 
         Returns:
-            Nothing: None
+            Nothing
         """
         total_price: float = 0
         for item in self.cart.items:
@@ -147,7 +147,7 @@ class Cart:
             None
 
         Returns:
-            Nothing: None
+            Nothing
         """
         if len(self.items) > 0:
             remove_list = []

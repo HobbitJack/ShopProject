@@ -11,7 +11,7 @@ def print_help() -> None:
         None
 
     Returns:
-        Nothing: None
+        Nothing
     """
     print("buy: Allows you to purchase the items in your cart")
     print("cart: Prints the your cart and its total price")
@@ -29,7 +29,7 @@ def cli(user: ur.User, shop: sp.Shop) -> None:
         shop: shop.Shop = Shop object with given inventory to sell from
 
     Returns:
-        Nothing: None
+        Nothing
     """
     print(f"Shop Project Mark {VERSION[0]} Mod {VERSION[1]}\n")
     print("Type 'help' for a list of commands.")
@@ -75,7 +75,7 @@ def main() -> None:
         None
 
     Returns:
-        Nothing: None
+        Nothing
     """
     store: sp.Shop = sp.Shop(
         ["Sword", "Bow", "Arrows"], [10, 5, 1], [1, 2, 50], [100, 100, -1]
