@@ -2,6 +2,7 @@
 import shop as sp
 import user as ur
 
+VERSION = (1, 1)
 
 def print_help() -> None:
     """Prints all available commands
@@ -29,7 +30,7 @@ def cli(user: ur.User, shop: sp.Shop) -> None:
     Returns:
         Nothing: None
     """
-    print("Store Project Mark 1 Mod 0\n")
+    print(f"Shop Project Mark {VERSION[0]} Mod {VERSION[1]}\n")
     print("Type 'help' for a list of commands.")
     while True:
         command = str(input("\n> ")).split(" ")
@@ -60,6 +61,9 @@ def cli(user: ur.User, shop: sp.Shop) -> None:
 
                 case "quit":
                     break
+
+                case _:
+                    print("Unrecognized command.")
             continue
 
 
@@ -78,7 +82,7 @@ def main() -> None:
     player: ur.User = ur.User(100)
 
     cli(player, store)
-    print("Thank you for using Shop Mark 1 Mod 0.")
+    print(f"Thank you for using Shop Project Mark {VERSION[0]} Mod {VERSION[1]}\n")
 
 
 if __name__ == "__main__":
