@@ -50,7 +50,10 @@ class Shop:
     ):
         self.inventory: list[ShopItem] = [
             ShopItem(
-                item_names[i], item_prices[i], item_amounts[i], item_durabilities[i]
+                item_names[i],
+                item_prices[i],
+                item_amounts[i],
+                item_durabilities[i],
             )
             for i in range(len(item_names))
         ]

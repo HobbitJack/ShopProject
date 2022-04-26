@@ -4,6 +4,7 @@ import user as ur
 
 VERSION = (1, 1)
 
+
 def print_help() -> None:
     """Prints all available commands
 
