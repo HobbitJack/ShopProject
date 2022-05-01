@@ -49,13 +49,10 @@ class Shop:
         item_durabilities: list[int],
     ):
         self.inventory: list[ShopItem] = [
-            ShopItem(
-                item_names[i],
-                item_prices[i],
-                item_amounts[i],
-                item_durabilities[i],
+            ShopItem(name, price, amount, durability)
+            for name, price, amount, durability in zip(
+                item_names, item_prices, item_amounts, item_durabilities
             )
-            for i in range(len(item_names))
         ]
         self.cart: Cart = Cart()
 
@@ -92,6 +89,9 @@ class Shop:
         for item in self.inventory:
             if item.name.lower() == item_name:
                 target_item = ShopItem(item.name, item.price, amount, item.durability)
+
+        self.cart.items.append(target_item)
+
         if amount > target_item.amount:
             print("Quantity to add to cart must not exceed quantity availible!")
             return
@@ -125,7 +125,7 @@ class Shop:
             for item in self.cart.items:
                 user.inventory[it.Item(item.name, item.durability)] = item.amount
                 for shop_item in self.inventory:
-                    if shop_item == item:
+                    if shop_item.name == item.name:
                         shop_item.amount -= item.amount
             self.cart.items.clear()
 
@@ -142,6 +142,25 @@ class Cart:
 
     def __init__(self):
         self.items: list[ShopItem] = []
+
+    def remove_item(self, item_name):
+        """Remove an item from cart
+
+        Parameters:
+            item_name: Name of the item to remove from cart
+
+        Returns:
+            None
+        """
+        for item in self.items:
+            if item.name.lower() == item_name:
+                target_item = item
+                break
+        else:
+            print("Item to remove not found in cart")
+            return
+        self.items.remove(target_item)
+        self.print_cart()
 
     def print_cart(self) -> None:
         """Print all items in the cart and clear items with no quantity

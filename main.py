@@ -2,7 +2,7 @@
 import shop as sp
 import user as ur
 
-VERSION = (1, 1)
+VERSION = (1, 2)
 
 
 def print_help() -> None:
@@ -63,6 +63,12 @@ def cli(user: ur.User, shop: sp.Shop) -> None:
 
                 case "quit":
                     break
+
+                case "remove":
+                    if len(command) != 2:
+                        print("Please specify an item to remove from your cart.")
+                    else:
+                        shop.cart.remove_item(command[1])
 
                 case _:
                     print("Unrecognized command.")
