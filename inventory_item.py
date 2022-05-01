@@ -1,8 +1,11 @@
 """Stand-in Item module"""
+from dataclasses import dataclass
 
 
+@dataclass
 class Item:
     """Stand-in Item class
+    Dataclass
 
     Atrributes:
         self.name: str = The item's name
@@ -12,6 +15,5 @@ class Item:
         None
     """
 
-    def __init__(self, name: str, durability=-1):
-        self.name = name
-        self.durability = durability
+    name: str
+    durability: int

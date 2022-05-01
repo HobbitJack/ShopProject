@@ -1,88 +1,43 @@
-"""Simple command line interface to hold the shop system together"""
-import shop as sp
-import user as ur
-
-VERSION = (1, 1)
-
-def print_help() -> None:
-    """Prints all available commands
-
-    Parameters:
-        None
-
-    Returns:
-        Nothing: None
-    """
-    print("buy: Allows you to purchase the items in your cart")
-    print("cart: Prints the your cart and its total price")
-    print("help: Pritns the list of availible commands")
-    print("inventory: Prints your inventory and how much money you have")
-    print("items: Prints all items availible for sale")
-    print("quit: Exits the shop")
+from decimal import Decimal
+from collections import namedtuple
+from inventory_item import Item
+import store
 
 
-def cli(user: ur.User, shop: sp.Shop) -> None:
-    """Primary CLI function for user interation. Can easily be re-written to suit anyone's needs.
+def main():
+    items: list[Item] = []
 
-    Parameters:
-        None
+    # These items can be anything:tm: and this data could be pre-processed into a tuple(Item, Decimal, int) and added to item_data
+    item_names = ["Sword", "Bow", "Arrow"]
+    item_durabilities = [0, 0, 0]
+    item_prices = [Decimal("20.00"), Decimal("10.00"), Decimal("1.00")]
+    item_amounts = [1, 2, 25]
+    for name, durability in zip(item_names, item_durabilities):
+        items.append(Item(name, durability))
+    ShopItem = namedtuple("ShopItem", ["price", "amount"])
+    item_data: list[tuple[Item, Decimal, int]] = [
+        (item, price, amount)
+        for item, price, amount in zip(items, item_prices, item_amounts)
+    ]
+    # End shop inventory pre-processing
 
-    Returns:
-        Nothing: None
-    """
-    print(f"Shop Project Mark {VERSION[0]} Mod {VERSION[1]}\n")
+    current_store = store.Shop(
+        {
+            item_data[i][0]: ShopItem(item_data[i][1], item_data[i][2])
+            for i in range(len(item_data))
+        }
+    )
+
+
+def cli(target_store):
     print("Type 'help' for a list of commands.")
     while True:
-        command = str(input("\n> ")).split(" ")
-        if command[0] in [item.name.lower() for item in shop.inventory]:
-            if len(command) == 2:
-                shop.add_to_cart(command[0], int(command[1]))
-            else:
-                print("Please include a quantiy to add to cart.")
-
-        else:
-            match command[0]:
-                case "buy":
-                    shop.purchase_cart(user)
-                    print("Your inventory:")
-                    user.print_inventory()
-
-                case "cart":
-                    shop.cart.print_cart()
-
-                case "help":
-                    print_help()
-
-                case "inventory":
-                    user.print_inventory()
-
-                case "items":
-                    shop.print_store_inventory()
-
-                case "quit":
-                    break
-
-                case _:
-                    print("Unrecognized command.")
-            continue
-
-
-def main() -> None:
-    """Entry point for demo
-
-    Parameters:
-        None
-
-    Returns:
-        Nothing: None
-    """
-    store: sp.Shop = sp.Shop(
-        ["Sword", "Bow", "Arrows"], [10, 5, 1], [1, 2, 50], [100, 100, -1]
-    )
-    player: ur.User = ur.User(100)
-
-    cli(player, store)
-    print(f"Thank you for using Shop Project Mark {VERSION[0]} Mod {VERSION[1]}\n")
+        command = input("> ").split()
+        match command:
+            case [str, int]:
+                pass
+            case ["help"]:
+                print("help!")
 
 
 if __name__ == "__main__":
