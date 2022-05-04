@@ -1,15 +1,20 @@
+"""Demo CLI for the store. Not necessary."""
 from decimal import Decimal
-from typing import TypeVar
 
 from inventory_item import Item
 from player import Player
 import store
 
 
-PlayerClass = TypeVar("PlayerClass")
-
-
 def main():
+    """Main Function for the demo CLI
+
+    Parameters:
+        None
+
+    Returns:
+        None
+    """
     item_data: dict[Item, tuple[Decimal, int]]
     user = Player(Decimal(100), {})
 
@@ -33,6 +38,15 @@ def main():
 
 
 def add_to_cart(shop: store.Shop, command: list[str]):
+    """Add a specified item to cart at a specific amount
+
+    Parameters:
+        shop: store.Shop = Shop to take items from and to store cart to
+        command: list[str] = Item name and amount to add to cart
+
+    Returns:
+        None
+    """
     if len(command) == 2:
         try:
             amount = int(command[1])
@@ -45,11 +59,41 @@ def add_to_cart(shop: store.Shop, command: list[str]):
                 if amount < metadata[1]:
                     print("Quantity to add to cart must not exceed quantity availible.")
                     return
-                else:
-                    shop.add_to_cart(item, metadata[0], amount)
+                shop.add_to_cart(item, metadata[0], amount)
 
 
-def cli(target_store: store.Shop, target_user: PlayerClass):
+def print_help():
+    """Print help information about the CLI
+
+    Parameters:
+        None
+
+    Returns:
+        None
+    """
+    print(
+        "Type an item name, with capitalization and punctuation,"
+        "followed by a number to add that many of that item to cart"
+    )
+    print("buy: Purchase all items in your cart")
+    print("help: Describe how to use this program")
+    print("items: Print the store's stock of items to buy")
+    print("quit: Exit this program")
+    print(
+        "remove [item name]: Remove all instances of the item with that name from your cart"
+    )
+
+
+def cli(target_store: store.Shop, target_user: Player):
+    """Demo command line interface
+
+    Parameters:
+        target_store: store.Shop = Store to buy items from
+        target_user: Player = Player to buy for
+
+    Returns:
+        None
+    """
     print("Type 'help' for a list of commands.")
     while True:
         command = input("> ").split()
@@ -60,12 +104,16 @@ def cli(target_store: store.Shop, target_user: PlayerClass):
         match command:
             case ["buy"]:
                 target_store.buy_cart(target_user)
+            case ["help"]:
+                print_help()
             case ["items"]:
                 target_store.print_inventory()
-            case ["remove", item_name]:
-                target_store.remove_from_cart(item_name)
+            case ["inventory"]:
+                print(target_user.inventory)
             case ["quit"]:
                 break
+            case ["remove", item_name]:
+                target_store.remove_from_cart(item_name)
             case _:
                 print("Unrecognized command.")
 
