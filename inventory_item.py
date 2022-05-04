@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True)
 class Item:
     """Stand-in Item class
     Dataclass
@@ -16,4 +16,4 @@ class Item:
     """
 
     name: str
-    durability: int
+    durability: float
