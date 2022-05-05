@@ -7,7 +7,6 @@ class ItemHasAttributes(Protocol):
     """This class ensures the ItemClass TypeVar also checks for our necessary properties"""
 
     name: str
-    durability: float
 
 
 ItemClass = TypeVar("ItemClass", bound=ItemHasAttributes)
