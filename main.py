@@ -1,96 +1,121 @@
-"""Simple command line interface to hold the shop system together"""
-import shop as sp
-import user as ur
+"""Demo CLI for the store. Not necessary."""
+from decimal import Decimal
 
-VERSION = (1, 2)
+from inventory_item import Item
+from player import Player
+import store
 
 
-def print_help() -> None:
-    """Prints all available commands
+def main():
+    """Main Function for the demo CLI
 
     Parameters:
         None
 
     Returns:
-        Nothing
+        None
     """
-    print("buy: Allows you to purchase the items in your cart")
-    print("cart: Prints the your cart and its total price")
-    print("help: Prints the list of availible commands")
-    print("inventory: Prints your inventory and how much money you have")
-    print("items: Prints all items availible for sale")
-    print("quit: Exits the shop")
+    item_data: dict[Item, tuple[Decimal, int]]
+    user = Player(Decimal(100), {})
+
+    # These items can be anything:tm: and this data could be
+    # pre-processed into a tuple(Item, Decimal, int) and added to item_data
+
+    item_names = ["Sword", "Bow", "Arrow"]
+    item_durabilities = [100, 100, -1]
+    item_prices = [Decimal("20.00"), Decimal("10.00"), Decimal("1.00")]
+    item_amounts = [1, 2, 25]
+
+    item_data = {
+        Item(name, durability): (price, amount)
+        for name, durability, price, amount in zip(
+            item_names, item_durabilities, item_prices, item_amounts
+        )
+    }
+    # End shop inventory pre-processing
+
+    cli(store.Shop(item_data), user)
 
 
-def cli(user: ur.User, shop: sp.Shop) -> None:
-    """Primary CLI function for user interation. Can easily be re-written to suit anyone's needs.
+def add_to_cart(shop: store.Shop, command: list[str]):
+    """Add a specified item to cart at a specific amount
 
     Parameters:
-        user: user.User = Player object to get money from and acess inventory
-        shop: shop.Shop = Shop object with given inventory to sell from
+        shop: store.Shop = Shop to take items from and to store cart to
+        command: list[str] = Item name and amount to add to cart
 
     Returns:
-        Nothing
+        None
     """
-    print(f"Shop Project Mark {VERSION[0]} Mod {VERSION[1]}\n")
+    if len(command) == 2:
+        try:
+            amount = int(command[1])
+            assert amount > 0
+        except (ValueError, AssertionError):
+            print("Quantity to add to cart must be a positive integer.")
+            return
+        for item, metadata in shop.inventory.items():
+            if item.name == command[0]:
+                if amount < metadata[1]:
+                    print("Quantity to add to cart must not exceed quantity availible.")
+                    return
+                shop.add_to_cart(item, metadata[0], amount)
+
+
+def print_help():
+    """Print help information about the CLI
+
+    Parameters:
+        None
+
+    Returns:
+        None
+    """
+    print(
+        "Type an item name, with capitalization and punctuation,"
+        "followed by a number to add that many of that item to cart"
+    )
+    print("buy: Purchase all items in your cart")
+    print("help: Describe how to use this program")
+    print("items: Print the store's stock of items to buy")
+    print("quit: Exit this program")
+    print(
+        "remove [item name]: Remove all instances of the item with that name from your cart"
+    )
+
+
+def cli(target_store: store.Shop, target_user: Player):
+    """Demo command line interface
+
+    Parameters:
+        target_store: store.Shop = Store to buy items from
+        target_user: Player = Player to buy for
+
+    Returns:
+        None
+    """
     print("Type 'help' for a list of commands.")
     while True:
-        command = str(input("\n> ")).split(" ")
-        if command[0] in [item.name.lower() for item in shop.inventory]:
-            if len(command) == 2:
-                shop.add_to_cart(command[0], int(command[1]))
-            else:
-                print("Please include a quantity to add to cart.")
-
-        else:
-            match command[0]:
-                case "buy":
-                    shop.purchase_cart(user)
-                    print("Your inventory:")
-                    user.print_inventory()
-
-                case "cart":
-                    shop.cart.print_cart()
-
-                case "help":
-                    print_help()
-
-                case "inventory":
-                    user.print_inventory()
-
-                case "items":
-                    shop.print_store_inventory()
-
-                case "quit":
-                    break
-
-                case "remove":
-                    if len(command) != 2:
-                        print("Please specify an item to remove from your cart.")
-                    else:
-                        shop.cart.remove_item(command[1])
-
-                case _:
-                    print("Unrecognized command.")
-            continue
-
-
-def main() -> None:
-    """Entry point for demo
-
-    Parameters:
-        None
-
-    Returns:
-        Nothing
-    """
-    store: sp.Shop = sp.Shop(
-        ["Sword", "Bow", "Arrows"], [10, 5, 1], [1, 2, 50], [100, 100, -1]
-    )
-    player: ur.User = ur.User(100)
-
-    cli(player, store)
-    print(f"Thank you for using Shop Project Mark {VERSION[0]} Mod {VERSION[1]}\n")
+        command = input("> ").split()
+        if command[0] in [item.name for item in target_store.inventory.keys()]:
+            add_to_cart(target_store, command)
+            target_store.cart_print()
+            break
+        match command:
+            case ["buy"]:
+                target_store.buy_cart(target_user)
+            case ["help"]:
+                print_help()
+            case ["items"]:
+                target_store.print_inventory()
+            case ["inventory"]:
+                print(target_user.inventory)
+            case ["quit"]:
+                break
+            case ["remove", item_name]:
+                target_store.remove_from_cart(item_name)
+            case _:
+                print("Unrecognized command.")
 
 
 if __name__ == "__main__":
